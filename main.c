@@ -58,12 +58,13 @@ int main( void )
 	configASSERT() is called. */
 	printf( "\r\nmain() started.\r\n" );
 
-	xQueue = xQueueCreate(15, sizeof(int));
+	xQueue = xQueueCreate(20, sizeof(int));
 
 	xTaskCreate(vTask_test1, (signed char *)"T1", mainCHECK_TAKS_STACK_SIZE, NULL, 4, NULL);
 	xTaskCreate( vTask_test2, ( signed char * )"T2", mainCHECK_TAKS_STACK_SIZE, NULL, 6, NULL );
-	xTaskCreate( vTask_test3, ( signed char * )"T3", mainCHECK_TAKS_STACK_SIZE, NULL, 5, NULL );
+	xTaskCreate( vTask_test3, ( signed char * )"T3", mainCHECK_TAKS_STACK_SIZE, NULL, 4, NULL );
 	xTaskCreate(vTask_test4, (signed char *)"T4", mainCHECK_TAKS_STACK_SIZE, NULL, 2, NULL);
+	xTaskCreate(vTask_test5, (signed char *)"T5", mainCHECK_TAKS_STACK_SIZE, NULL, 6, NULL);
 
 	/* Finally start the scheduler. */
 	vTaskStartScheduler();
@@ -104,6 +105,40 @@ static void vTask_test3(void *pvParameters)
 		}
 	}
 }
+
+static void vTask_test5(void *pvParameters)
+{
+	BYTE a;
+	portTickType xLastWakeTime;
+	int value[10] = { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+	portBASE_TYPE xStatus;
+
+	(void)pvParameters;
+
+	a = 0;
+	xLastWakeTime = xTaskGetTickCount();
+	for (;;)
+	{
+		vTaskDelayUntil(&xLastWakeTime, 100);
+
+		for (a = 0; a < 10; a++)
+		{
+			xStatus = uxQueueMessagesWaiting(xQueue);
+			printf("T5 QQQ ============== %d\n", xStatus);
+			xStatus = xQueueSendToBack(xQueue, &value[a], 0);
+			if (xStatus != pdPASS)
+			{
+				/* The send operation could not complete because the queue was full -
+				this must be an error as the queue should never contain more than
+				one item! */
+				printf("xxxxxxxxxxxxx Could not send to the queue.\r\n");
+			}
+
+			printf("T5 =>Q [%d]\n", value[a]);
+		}
+	}
+}
+
 
 static void vTask_test4(void *pvParameters)
 {
