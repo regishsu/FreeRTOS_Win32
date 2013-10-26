@@ -62,8 +62,8 @@ int main( void )
 
 	xTaskCreate(vTask_test1, (signed char *)"T1", mainCHECK_TAKS_STACK_SIZE, NULL, 4, NULL);
 	xTaskCreate( vTask_test2, ( signed char * )"T2", mainCHECK_TAKS_STACK_SIZE, NULL, 6, NULL );
-	xTaskCreate( vTask_test3, ( signed char * )"T3", mainCHECK_TAKS_STACK_SIZE, NULL, 2, NULL );
-	xTaskCreate(vTask_test4, (signed char *)"T4", mainCHECK_TAKS_STACK_SIZE, NULL, 5, NULL);
+	xTaskCreate( vTask_test3, ( signed char * )"T3", mainCHECK_TAKS_STACK_SIZE, NULL, 5, NULL );
+	xTaskCreate(vTask_test4, (signed char *)"T4", mainCHECK_TAKS_STACK_SIZE, NULL, 2, NULL);
 
 	/* Finally start the scheduler. */
 	vTaskStartScheduler();
